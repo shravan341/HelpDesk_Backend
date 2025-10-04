@@ -13,7 +13,7 @@ const app = express();
 // CORS configuration — only once
 const allowedOrigins = [
   "https://help-desk-frontend-pi.vercel.app",
-  "http://localhost:3000"
+  "http://localhost:3000",
 ];
 
 app.use(
@@ -24,12 +24,15 @@ app.use(
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        callback(new Error("CORS not allowed for this origin: " + origin), false);
+        callback(
+          new Error("CORS not allowed for this origin: " + origin),
+          false
+        );
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -45,14 +48,14 @@ connectDB();
 // Routes — note prefix “/api”
 app.use("/api/auth", authRoutes);
 app.use("/api/tickets", ticketRoutes);
-app.use("/api/tickets", commentRoutes);  // though you might want commentRoutes under auth or tickets
+app.use("/api/tickets", commentRoutes); // though you might want commentRoutes under auth or tickets
 
 // Health check
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "OK",
     message: "Vercel Backend is running",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -62,7 +65,7 @@ app.get("/", (req, res) => {
     message: "Help Desk Backend API on Vercel",
     health: "/api/health",
     auth: "/api/auth",
-    tickets: "/api/tickets"
+    tickets: "/api/tickets",
   });
 });
 
