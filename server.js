@@ -10,49 +10,60 @@ dotenv.config();
 
 const app = express();
 
-// CORS configuration
-app.use(cors());
+// CORS configuration — only once
+const allowedOrigins = [
+  "https://help-desk-frontend-pi.vercel.app",
+  "http://localhost:3000"
+];
 
 app.use(
   cors({
-    origin: [
-      "https://help-desk-frontend-pi.vercel.app/",
-      "http://localhost:3000",
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed for this origin: " + origin), false);
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
+// To properly respond to preflight (OPTIONS) for all routes
+app.options("*", cors());
+
+// for parsing JSON bodies
 app.use(express.json());
 
-// Connect to Database
+// Connect to DB
 connectDB();
 
-// Routes
+// Routes — note prefix “/api”
 app.use("/api/auth", authRoutes);
 app.use("/api/tickets", ticketRoutes);
-app.use("/api/tickets", commentRoutes);
+app.use("/api/tickets", commentRoutes);  // though you might want commentRoutes under auth or tickets
 
-// Health check endpoint
+// Health check
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "OK",
     message: "Vercel Backend is running",
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   });
 });
 
-// Root endpoint
+// Root
 app.get("/", (req, res) => {
   res.json({
     message: "Help Desk Backend API on Vercel",
     health: "/api/health",
     auth: "/api/auth",
-    tickets: "/api/tickets",
+    tickets: "/api/tickets"
   });
 });
 
-// Export for Vercel serverless
 export default app;
