@@ -6,7 +6,6 @@ import authRoutes from "./routes/authRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -38,7 +37,7 @@ app.use("/api/tickets", commentRoutes);
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     status: "OK",
-    message: "Backend server is running on Vercel",
+    message: "Vercel Backend is running",
     timestamp: new Date().toISOString(),
   });
 });
@@ -46,12 +45,10 @@ app.get("/api/health", (req, res) => {
 // Root endpoint
 app.get("/", (req, res) => {
   res.json({
-    message: "Help Desk Backend API",
-    endpoints: {
-      auth: "/api/auth",
-      tickets: "/api/tickets",
-      health: "/api/health",
-    },
+    message: "Help Desk Backend API on Vercel",
+    health: "/api/health",
+    auth: "/api/auth",
+    tickets: "/api/tickets",
   });
 });
 
