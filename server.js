@@ -16,7 +16,7 @@ app.use(cors());
 app.use(
   cors({
     origin: [
-      "https://help-desk-frontend-sdgg.vercel.app/login",
+      "https://help-desk-frontend-pi.vercel.app/",
       "http://localhost:3000",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
