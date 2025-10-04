@@ -14,6 +14,7 @@ app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(cors({
   origin: process.env.CLIENT_URL || "https://help-desk-frontend-sg18.vercel.app",
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 
