@@ -9,6 +9,7 @@ import commentRoutes from "./routes/commentRoutes.js";
 dotenv.config();
 const app = express();
 connectDB();
+app.use(cors({ origin: '*' }));
 
 app.use(express.json());
 app.use(cors({
