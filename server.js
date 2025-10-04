@@ -6,21 +6,54 @@ import authRoutes from "./routes/authRoutes.js";
 import ticketRoutes from "./routes/ticketRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 
+// Load environment variables
 dotenv.config();
-const app = express();
-connectDB();
 
+const app = express();
+
+// CORS configuration
+app.use(
+  cors({
+    origin: [
+      "https://help-desk-frontend-sg18.vercel.app",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
-app.use(cors({
-  origin: process.env.CLIENT_URL || "https://help-desk-frontend-sg18.vercel.app",
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
-}));
 
+// Connect to Database
+connectDB();
+
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/tickets", ticketRoutes);
-app.use("/api/tickets", commentRoutes); // comment routes use /:ticketId/comments
+app.use("/api/tickets", commentRoutes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, ()=> console.log(`Server running on ${PORT}`));
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    message: "Backend server is running on Vercel",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({
+    message: "Help Desk Backend API",
+    endpoints: {
+      auth: "/api/auth",
+      tickets: "/api/tickets",
+      health: "/api/health",
+    },
+  });
+});
+
+// Export for Vercel serverless
+export default app;
